@@ -67,7 +67,20 @@ console.log(customFilterResult); //[3, 4]
 Array.prototype.customReduce = function (callBackFunction, initialValue) {
   //INITIALIZE ACCUMULATOR WITH initialValue
   let accumulator = initialValue;
-  for (let index = 0; index < array.length; index++) {
-    const element = array[index];
+  for (let index = 0; index < this.length; index++) {
+    accumulator = accumulator
+      ? callBackFunction(accumulator, this[index], index, this)
+      : this[index];
   }
+
+  return accumulator;
 };
+
+const customReduceResult = nums.customReduce(
+  (accumulator, currentElement, index, arr) => accumulator + currentElement,
+  0
+);
+
+console.log(customReduceResult); //10
+
+
