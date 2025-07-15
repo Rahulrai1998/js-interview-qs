@@ -210,3 +210,43 @@ let isViewd = likeThisVideo();
 isViewd(); //Hello Rahul Kumar
 isViewd(); // Already run
 isViewd(); //Already run
+
+//8. _once() polyfill, it will let a function run only once
+// A generic function which makes a function run only once if called multiple times
+function once(func, cxt) {
+  let ran;
+  return function () {
+    if (func) {
+      ran = func.apply(cxt || this, arguments);
+      func = null;
+    }
+    return ran;
+  };
+}
+const callOnce = once((a, b) => console.log("Hello", a, b), "test");
+callOnce("1", "2"); // this will only run
+callOnce();
+callOnce();
+
+//9. Memoize/caching polyfill/function
+//code below is time expensive and will take time due to loop
+const clumsySquare = (num1, num2) => {
+  for (let i = 1; i <= 1000000000; i++) {}
+  return num1 * num2;
+};
+//create a memoize function
+function memoize(func, cxt) {
+  let cache = {};
+  return function (...args) {
+    const key = JSON.stringify(args);
+    if (!cache[key]) {
+      cache[key] = func.call(cxt || this, ...args);
+    } else {
+      console.log(key);
+    }
+    return cache[key];
+  };
+}
+const callMemoize = memoize(clumsySquare);
+console.log(callMemoize(10, 5)); // first time computed and result stored in cache
+console.log(callMemoize(10, 5)); // it comes from the cache b/c same input
