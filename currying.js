@@ -59,4 +59,52 @@ console.log(evaluate("non")(4)(8)); //invalid ops
 
 //reuse multiply arg for diff args
 const multiply = evaluate("mul");
-console.log(m)
+console.log(multiply(1)(9)); //9
+console.log(multiply(2)(6)); //12
+
+//3. Infinite currying: sum(1)(2)(3)...(n)
+//implement add(5)(2)(4)(5)()
+// we use recursion here.
+function add(a) {
+  return function (b) {
+    if (b) return add(a + b); // recursive call
+    else return a;
+  };
+}
+
+console.log(add(5)()); //5
+console.log(add(5)(6)()); //11
+console.log(add(5)(2)(4)(5)()); //16, we can add any number of args in add
+
+//4. Currying vs Partial Application
+
+//Currying: transforms a function of n arguments into n nummber of functions with 1 argument each. It is strictly followed
+
+//Partial Application: In this there could be less number of functions than the arguments.
+
+//example of partial application
+function addPartial(a) {
+  return function (b, c) {
+    return a + b + c;
+  };
+}
+
+const x = addPartial(10);
+console.log(x(11, 78));
+//or
+console.log(addPartial(10)(11, 78));
+
+//5. Real life example of currying: DOM manipulation
+function updateElementText(id) {
+  return function (content) {
+    document.querySelector("#" + id).textContent = content;
+  };
+}
+
+const updateHeader = updateElementText("header");
+updateHeader("See yaa");
+updateHeader("Nice T-shirt");
+
+//curry() implementation
+//which converts f(a,b,c) into f(a)(b)(c)
+
