@@ -105,6 +105,38 @@ const updateHeader = updateElementText("header");
 updateHeader("See yaa");
 updateHeader("Nice T-shirt");
 
-//curry() implementation
+//6. curry() implementation
 //which converts f(a,b,c) into f(a)(b)(c)
 
+function curry(func) {
+  return function curriedFunc(...args) {
+    if (args.length >= func.length) return func(...args);
+    else {
+      //following function will be returned every time to accept next argumment
+      //in case, args.length >= func.length.
+      //then again the curriedFunc is called with new collection of args
+      //i.e args+next.
+      //it will run until  args+next == all the args
+      return function (...next) {
+        return curriedFunc(...args, ...next);
+      };
+    }
+  };
+}
+
+const sumToCurry = (a, b, c, d) => a + b + c + d;
+const totalSum = curry(sumToCurry);
+
+const passA = totalSum(1);
+console.log(passA);
+//returns following function, hence pass next arg
+// ƒ (...next) {
+//         return curriedFunc(...args, ...next);
+//       }
+const passB = passA(6);
+console.log(passB); // again returns the same function, to pass the next arg
+
+//so we can write like this
+console.log(totalSum(1)(6)(5)(6)); //18
+
+//7. Write a function curry() that converts f(a,b,c) into a curried function f(a)(b)(c) with placeholder ( _ ) support.
