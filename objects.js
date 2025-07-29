@@ -64,3 +64,90 @@ const c = { key: "c" }; //hence, it will convert into "[object Object]" first
 a[b] = 123; //{[object Object]: 123}
 a[c] = 456; //{[object Object]: 456}
 console.log(a); //{[object Object]: 456}
+
+//4. JSON.stringify() and JSON.parse()
+const newObj = {
+  name: "Ramesh",
+  age: 78,
+};
+const strng = JSON.stringify(newObj);
+console.log(strng); //"{"name":"Ramesh","age":78}" : object to string
+console.log(JSON.parse(strng)); //{name: 'Ramesh', age: 78} : string to object
+
+//USAGE
+//1. localStorage: we store values in the form of string only, hence stringigy is used to
+// convert and store and then parse is used to retrieve the value back into object form.
+//2. Data Transfer: for sending data over http protocols we first stringify data then
+// we parse it as per usage.
+
+localStorage.setItem("data", strng); //"data":"{"name":"Ramesh","age":78}"
+console.log(JSON.parse(localStorage.getItem("data"))); //{name: 'Ramesh', age: 78}
+
+//5. Output
+console.log([..."Lydia"]); //(5) ['L', 'y', 'd', 'i', 'a']
+
+//6. Output
+const newUser = { name: "Lydia", age: 21 };
+const admin = { admin: true, ...newUser };
+console.log(admin); //{admin: true, name: 'Lydia', age: 21}
+
+//7. Output
+const settings = { username: "Rahul", level: 45, health: 80 };
+//will only stringify level and health
+const dataNew = JSON.stringify(settings, ["level", "health"]);
+console.log(dataNew); //{"level":45,"health":80}
+
+//8.Output
+const shape = {
+  radius: 10,
+  //Normal function 'this' referes to the current object
+  diameter() {
+    return this.radius * 2;
+  },
+  //arrow function 'this' refers to the outer/global/window object
+  perimeter: () => 2 * Math.PI * this.radius,
+};
+console.log(shape.diameter()); // 20
+console.log(shape.perimeter()); //NaN
+
+//Destructuring in objects
+let userNew = {
+  name: "Pratik",
+  age: 24,
+  address: {
+    city: "Patna",
+    state: "Bihar",
+  },
+};
+
+const name = "Test name";
+const {
+  name: objName,
+  age,
+  //nested destructuring
+  address: { city },
+} = userNew;
+console.log(objName); // Pratik
+console.log(city); //Patna
+
+//9. Output
+function getItems(fruitList, favouriteFruit, ...args) {
+  return [...fruitList, ...args, favouriteFruit];
+}
+console.log(getItems(["banana", "apple"], "pear", "orange")); //['banana', 'apple', 'orange', 'pear']
+
+//10. Object Referencing, Output
+let greet = { greeting: "Hii" };
+let newGreet;
+//SHALLOW COPY IS MADE
+newGreet = greet; // new variable will point to the same memory address as greet
+greet.greeting = "New Hii";
+console.log(newGreet.greeting, greet);
+
+//11. Output
+//in JS objects are only equal if their references are same
+//in this example each obj hold different addresses despite the same value
+console.log({ a: 1 } == { a: 1 }); // false
+console.log({ a: 1 } === { a: 1 }); //false
+ 
+//
