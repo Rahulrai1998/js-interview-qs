@@ -80,3 +80,75 @@ class User {
 }
 const usr = new User("Rahul", 56);
 usr.getName(); //Rahul
+
+//1. output
+const userOne = {
+  firstName: "Rahul",
+  getName() {
+    const firstName = "Ramesh";
+    return this.firstName;
+  },
+};
+console.log(userOne.getName()); //Rahul
+
+//2. what is the result of ref?
+function makeUser() {
+  return {
+    name: "Alok",
+    ref: this, //here 'this is pointing to the Window object'
+  };
+}
+console.log(makeUser().ref.name); //prints NOTHING
+
+//3. fix above
+function makeUserFix() {
+  return {
+    name: "alok",
+    //ref function is already inside an object
+    ref() {
+      return this; //here 'this' will point to the current parent object
+    },
+  };
+}
+console.log(makeUserFix().ref().name); //alok
+
+//4. output
+const userTwo = {
+  name: "Harish",
+  logMessage() {
+    console.log(this.name);
+  },
+};
+
+//The callback function is the copy of object function, hence the copy has no context rather than Window obj.
+setTimeout(userTwo.logMessage, 1000); //logMessage is not called instead it is passed as a callback, hence nothing happens
+setTimeout(userTwo.logMessage(), 1000); //Harish
+
+//5. output
+const userThree = {
+  name: "Goyal",
+  greet() {
+    return `Hello,${this.name}`;
+  },
+  farewell: () => `Goodbye, ${this.name}`, //'this' refers to outer scope/Window obj
+};
+console.log(userThree.greet()); //Hello,Goyal
+console.log(userThree.farewell()); //Goodbye, NOTHING, due to arrow function
+
+//6. Create an object calculator
+let calculator = {
+  read() {
+    this.a = +prompt("a = ", 0);
+    this.b = +prompt("b = ", 0);
+  },
+  sum() {
+    return this.a + this.b;
+  },
+  mul() {
+    return this.a * this.b;
+  },
+};
+
+calculator.read();
+console.log(calculator.sum());
+console.log(calculator.mul());
