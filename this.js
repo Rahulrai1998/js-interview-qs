@@ -30,7 +30,7 @@ const userThis = {
   age: 56,
   //normal function
   getAge() {
-    console.log(this.age); // here this refers to the immediate parent object i.e userThis
+    console.log(this.age); // here 'this' refers only to the immediate parent object i.e userThis
   },
 };
 userThis.getAge(); // 56
@@ -47,3 +47,36 @@ const data = {
 data.address.getCity(); //Kolkata undefined
 
 //'this' inside an arrow function
+const userDetails = {
+  name: "Rakesh",
+  age: 56,
+  getName: () => console.log(this.name), //here this is not pointing to the immediate obj rather currrently it points to the Window Obj
+};
+
+userDetails.getName(); //prints NOTHING
+
+//this inside an arrow function which is inside a normal function
+const newUserDetails = {
+  name: "Prem",
+  age: 89,
+  getName() {
+    const printName = () => console.log(this.name); //here this refers to the this of its parent function i.e newUserDetails
+    printName();
+  },
+};
+newUserDetails.getName(); //Prem
+
+//'this' inside a class and constructor
+//Inside a class 'this' refers to the instance of the class
+class User {
+  age;
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  getName() {
+    console.log(this.name, this.age);
+  }
+}
+const usr = new User("Rahul", 56);
+usr.getName(); //Rahul
