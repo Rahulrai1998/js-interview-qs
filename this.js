@@ -152,3 +152,58 @@ let calculator = {
 calculator.read();
 console.log(calculator.sum());
 console.log(calculator.mul());
+
+//7. Output
+var length = 4;
+function callback() {
+  console.log(this.length);
+}
+const object = {
+  length: 5,
+  //method() will target to object
+  method(fn) {
+    fn(); // fn() is inside the method() and it is a callback, hence it targets the global obj
+  },
+};
+
+object.method(callback); //4, callback functions run as a regular function hence, 'this' inside a callback function always refers to global/window object
+
+//8. output
+var length = 6;
+function callback() {
+  console.log(this.length);
+}
+const newObject = {
+  length: 8,
+  method() {
+    //arguments = [callback,4,6]
+    //here, arguments is an array like object, not entirely an array, hence the 'this' of callback refers to arguments object.
+    //arguments object already has a length: 3, hence, this length value is printed
+    console.log(arguments);
+    arguments[0]();
+  },
+};
+
+newObject.method(callback, 4, 6); //3
+
+//9. Implement calc
+// const result = calc.add(10).multiply(5).subtract(30).add(10);
+// console.log(result.total);
+const calc = {
+  // total: 0,
+  add(n) {
+    this.total += n;
+    return this;
+  },
+  multiply(n) {
+    this.total *= n;
+    return this;
+  },
+  subtract(n) {
+    this.total -= n;
+    return this;
+  },
+};
+
+const result = calc.add(10).multiply(5).subtract(30).add(10);
+console.log(result.total);
