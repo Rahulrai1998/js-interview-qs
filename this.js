@@ -1,5 +1,4 @@
 //implicit and explicit object bindings
-
 //IMPLICIT
 const user = {
   name: "Rahul",
