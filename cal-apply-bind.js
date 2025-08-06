@@ -112,3 +112,139 @@ function f() {
   console.log(this.name);
 }
 
+//here f is once bound to first obj it will always remain same
+//bind chaining doesn't work
+f = f.bind({ name: "John" }).bind({ name: "Ann" });
+f(); //John
+
+//12. fix the checkPassword() to make the code work
+function checkPassword(success, failed) {
+  let password = prompt("Password?", "");
+  if (password == "Rahul Kumar") success();
+  else failed();
+  //here failed and success functions are called inside another function
+  //hence the 'this' inside these functions def will ony point over the context of its parent funtion
+  //in this case it it Window obj and not the userNew obj
+  //hence, to work properly we need to bind the userNew obj while passing as callback
+}
+let userNew = {
+  name: "Rahul Kumar",
+  loginSuccessfull() {
+    console.log(`${this.name} logged in`);
+  },
+  loginFailed() {
+    console.log(`${this.name} failed to log in`);
+  },
+};
+// checkPassword(userNew.loginSuccessfull, userNew.loginFailed); // fix this
+checkPassword(
+  userNew.loginSuccessfull.bind(userNew),
+  userNew.loginFailed.bind(userNew)
+);
+
+//13. Partial Application for login function
+//Complete the checkPassword(?,?)
+function checkPass(ok, fail) {
+  let password = prompt("Password?", "");
+  if (password == "Road") ok();
+  else fail();
+}
+let newUser = {
+  name: "Rakesh Jay",
+  login(result) {
+    console.log(this.name + (result ? "login successfull" : "login failed"));
+  },
+};
+
+// checkPass(?,?)
+checkPass(
+  newUser.login.bind(newUser, true),
+  newUser.login.bind(newUser, false)
+);
+
+//14. Explicit binding with arrow function
+const ageNew = 10;
+
+var personArrow = {
+  name: "Rahul",
+  age: 20,
+  getAgeArrow: () => console.log(this.age),
+  getAge: function () {
+    console.log(this.age);
+  },
+};
+
+var person2 = { age: 24 };
+personArrow.getAge.call(person2); //20
+personArrow.getAgeArrow.call(person2); //undefined
+//explicit binding won't work with arrow function
+
+//15. call() polyfill
+let car1 = {
+  color: "Red",
+  company: "Ferrari",
+};
+
+function purchaseCar(currency, price) {
+  console.log(
+    `I have purchased ${this.color} - ${this.company} car for ${currency}${price}`
+  );
+}
+
+//purchaseCar.call(car1, "rupee", 1000000);
+
+Function.prototype.myCall = function (context = {}, ...args) {
+  //edge cases
+  if (typeof this !== "function") throw new Error(this + "It's not callable");
+
+  //embed the function to passed object
+  context.fn = this; //here this refers to the function on which myCall() mehtod will be bound
+  //now call the function using passed args
+  context.fn(...args);
+};
+purchaseCar.myCall(car1, "$", 56000);
+
+//16 apply() polyfill
+let shop = {
+  name: "Zara",
+  city: "Kolkata",
+};
+
+function buyShirt(currency, size) {
+  console.log(
+    `I have bought a shirt from ${this.name} at ${this.city} of ${currency}1000 of size ${size}`
+  );
+}
+// buyShirt.apply(shop, ["$", "M"]);
+Function.prototype.myApply = function (context = {}, args = []) {
+  if (typeof this !== "function") throw new Error(`${this} is not a function`);
+  if (!Array.isArray(args))
+    throw new Error("CreateListFromArrayLike called on non-object");
+
+  context.fn = this;
+  context.fn(...args);
+};
+buyShirt.myApply(shop, ["$", "S"]);
+
+//17. bind() polyfill
+let travel = {
+  city: "Shrinagar",
+  country: "India",
+};
+
+function travelTo(transport, budget) {
+  console.log(
+    `I travelled to ${this.city} in ${this.country} via ${transport} only with ${budget} rupees`
+  );
+}
+// const fn = travelTo.bind(travel, "Plane", 254000);
+// fn();
+Function.prototype.myBind = function (context = {}, ...args) {
+  if (typeof this !== "function") throw new Error(`${this} it is not callable`);
+  context.fn = this;
+  return function (...restArgs) {
+    return context.fn(...args, ...restArgs);
+  };
+};
+const fn = travelTo.bind(travel, "Train");
+fn(1000000);
