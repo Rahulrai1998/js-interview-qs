@@ -79,3 +79,36 @@ function printAnimals(i) {
 animals.forEach((obj, i) => {
   printAnimals.call(obj, i);
 });
+
+//8. append an array to another array
+const array = ["a", "b"];
+const elements = [0, 1, 2];
+
+array.concat(array, elements); //this will return a new array instead modifying the original
+
+array.push.apply(array, elements); //here we are setting the context of push() fun to array and passing second array as args
+console.log(array); //['a', 'b', 0, 1, 2]
+
+//9. Using apply to enhance built-in functions
+//a. Find min/max number in the array
+const numbers = [5, 6, 2, 3, 7];
+console.log(Math.max(...numbers)); // 7
+console.log(Math.min(...numbers)); // 2
+//using apply()
+console.log(Math.max.apply(null, numbers)); //7
+console.log(Math.min.apply(null, numbers)); //2
+
+//10. Bound function
+function f() {
+  console.log(this);
+}
+let user = {
+  g: f.bind(null), //the context of this f is hard-fixed using bind()
+};
+user.g(); //Window object
+
+//11. Bind chaining
+function f() {
+  console.log(this.name);
+}
+
