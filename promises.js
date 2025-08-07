@@ -95,7 +95,7 @@ function sendMailPromise(time) {
 function askForHelpPromise(help) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(`Please healp me with ${help}`);
+      reject(`Please healp me with ${help}`);
     }, 1000);
   });
 }
@@ -135,3 +135,36 @@ const promiseAll = Promise.all([
 console.log(promiseAll); //Promise
 promiseAll.then((res) => console.log(res)).catch((err) => console.log(err));
 //(3) ['Give a request to Lokesh', 'Send him a mail Morning', 'Please healp me with Networks']
+
+//Promise.race()
+Promise.race([promise1, promise2, promise3])
+  .then(result => {
+    // First promise to settle (resolve or reject)
+  })
+  .catch(error => {
+    // If the first settled promise rejects
+  });
+
+//Promise.allSettled()
+const promiseSettled = Promise.allSettled([
+  importantActionPromise("Tirth"),
+  sendMailPromise("Noon"),
+  askForHelpPromise("OS"),
+]);
+
+promiseSettled.then((res) => console.log(res)).catch((err) => console.log(err));
+//(3) [{…}, {…}, {…}]
+// 0: {status: 'fulfilled', value: 'Give a request to Tirth'}
+// 1: {status: 'fulfilled', value: 'Send him a mail Noon'}
+// 2: {status: 'rejected', reason: 'Please healp me with OS'}
+// length: 3
+
+//Promise.any()
+Promise.any([promise1, promise2, promise3])
+  .then(result => {
+    // First fulfilled value
+  })
+  .catch(error => {
+    // All promises rejected
+    console.error(error.errors); // AggregateError: [reason1, reason2, reason3]
+});
