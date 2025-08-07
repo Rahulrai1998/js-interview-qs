@@ -52,7 +52,86 @@ importantAction("Rahul Kumar", function (message) {
     });
   });
 });
-
 console.log("stop");
 
 //Promises
+console.log("start");
+const connect = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const connected = true;
+    if (connected) resolve("Connected to Rahul");
+    else reject(new Error("Couldn't connect"));
+  }, 2000);
+});
+console.log(connect); //Promise {<pending>}
+connect.then((res) => console.log(res)).catch((err) => console.log(err));
+console.log("stop");
+
+//resolving a promise directly, it will be by default in fullfilled state
+Promise.resolve("Hello Everyone").then((res) => console.log(res)); //Hello Everyone
+
+//rejecting a promise directly
+Promise.reject("New errror")
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err)); //New error
+
+//Solving previous callback hell with promises
+function importantActionPromise(username) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(`Give a request to ${username}`);
+    }, 1000);
+  });
+}
+
+function sendMailPromise(time) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(`Send him a mail ${time}`);
+    }, 1000);
+  });
+}
+
+function askForHelpPromise(help) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(`Please healp me with ${help}`);
+    }, 1000);
+  });
+}
+
+importantActionPromise("Rahul")
+  .then((res) => {
+    console.log(res);
+    sendMailPromise("Night").then((res) => {
+      console.log(res);
+      askForHelpPromise("Core Subs").then((res) => {
+        console.log(res);
+      });
+    });
+  })
+  .catch((err) => console.log(err));
+
+//Promise chaining
+importantActionPromise("Rakesh")
+  .then((res) => {
+    console.log(res);
+    return sendMailPromise("Noon");
+  })
+  .then((res) => {
+    console.log(res);
+    return askForHelpPromise("Maths");
+  })
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
+
+//Promise Combinators
+//Promise.all()
+const promiseAll = Promise.all([
+  importantActionPromise("Lokesh"),
+  sendMailPromise("Morning"),
+  askForHelpPromise("Networks"),
+]);
+console.log(promiseAll); //Promise
+promiseAll.then((res) => console.log(res)).catch((err) => console.log(err));
+//(3) ['Give a request to Lokesh', 'Send him a mail Morning', 'Please healp me with Networks']
