@@ -95,7 +95,7 @@ function sendMailPromise(time) {
 function askForHelpPromise(help) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject(`Please healp me with ${help}`);
+      resolve(`Please healp me with ${help}`);
     }, 1000);
   });
 }
@@ -138,10 +138,10 @@ promiseAll.then((res) => console.log(res)).catch((err) => console.log(err));
 
 //Promise.race()
 Promise.race([promise1, promise2, promise3])
-  .then(result => {
+  .then((result) => {
     // First promise to settle (resolve or reject)
   })
-  .catch(error => {
+  .catch((error) => {
     // If the first settled promise rejects
   });
 
@@ -161,10 +161,23 @@ promiseSettled.then((res) => console.log(res)).catch((err) => console.log(err));
 
 //Promise.any()
 Promise.any([promise1, promise2, promise3])
-  .then(result => {
+  .then((result) => {
     // First fulfilled value
   })
-  .catch(error => {
+  .catch((error) => {
     // All promises rejected
     console.error(error.errors); // AggregateError: [reason1, reason2, reason3]
-});
+  });
+
+// async/await
+const result = async () => {
+  try {
+    const message1 = await importantActionPromise("Joy");
+    const message2 = await sendMailPromise("Evening");
+    const message3 = await askForHelpPromise("DB");
+    console.log({ message1, message2, message3 });
+  } catch (error) {
+    console.log(error);
+  }
+};
+result();
