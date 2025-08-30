@@ -181,3 +181,18 @@ const result = async () => {
   }
 };
 result();
+
+//1. Output
+console.log("start promise new one"); //synchronous code
+const prms1 = new Promise((resolve, reject) => {
+  console.log(1); //synchronous code
+  resolve(2); //asynchronous code
+});
+
+prms1.then((res) => {
+  console.log(res); // asynchronous code
+});
+
+console.log("end promise new one"); //synchronous code
+// JS executes the synchronous code first and then other callbacks/asynchronous code
+//output: start 1 end 2
