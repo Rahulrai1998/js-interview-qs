@@ -223,3 +223,166 @@ prms3.then((res) => {
 });
 console.log("end");
 //start 1 2 end
+
+//4. output
+console.log("start");
+const fn = () => {
+  new Promise((resolve, reject) => {
+    console.log(1);
+    resolve("success");
+  });
+};
+console.log("middle");
+fn().then((res) => {
+  console.log(res);
+});
+console.log("end");
+//start middle 1 end success
+
+//5. output
+function job() {
+  return new Promise(function (resolve, reject) {
+    reject();
+  });
+}
+
+let prom = job();
+prom
+  .then(function () {
+    console.log("Success 1");
+  })
+  .then(function () {
+    console.log("Success 2");
+  })
+  .then(function () {
+    console.log("Success 3");
+  })
+  .catch(function () {
+    console.log("Error 1");
+  })
+  .then(function () {
+    console.log("Success 4");
+  });
+//Error 1 Success 4
+
+//6. output
+function job(state) {
+  return new Promise(function (resolve, reject) {
+    if (state) {
+      resolve("success");
+    } else {
+      reject("error");
+    }
+  });
+}
+
+let prm = job(true);
+
+prm
+  .then(function (data) {
+    console.log(data);
+    return job(false);
+  })
+  .catch(function (error) {
+    console.log(error);
+
+    return "Error Caught";
+  })
+  .then(function (data) {
+    console.log(data);
+    return job(true);
+  })
+  .catch(function (error) {
+    return console.log(error);
+  });
+//success Error Caught success
+
+//7. output
+function newJob() {
+  return new Promise(function (resolve, reject) {
+    if (state) {
+      resolve("success");
+    } else {
+      reject("error");
+    }
+  });
+}
+
+let prms = newJob(true); //resolves
+prms
+  .then(function (data) {
+    console.log(data); //success
+    return newJob(true); // resolves
+  })
+  .then(function (data) {
+    if (data !== "victory") {
+      //rejected promise
+      throw "Defeat"; //stops the execution and pass the control to first catch block
+    }
+    return newJob(true); //skipped
+  })
+  .then(function (data) {
+    console.log(data); //skipped
+  })
+  .catch(function (error) {
+    console.log(error); //Defeat
+    return job(false); //rejects
+  })
+  .then(function (data) {
+    //skipped
+    console.log(data);
+    return newJob(true);
+  })
+  .catch(function (error) {
+    console.log(error); //error
+    return "Error caught"; //resolved promise
+  })
+  .then(function (data) {
+    console.log(data); //Error caught
+    return new Error("Test"); // resolved promise
+  })
+  .then(function (data) {
+    console.log("Success:", data.message); //Test
+  })
+  .catch(function (error) {
+    //skipped
+    console.log("Error: ", data.message);
+  });
+// success-> Defeat-> error-> Error caught-> Success: Test
+
+//8. Promise Chaining: Create a promise firstPromise which resolves to "first", then create a secondPromise which resolves to the firstPromise
+const firstPromise = new Promise((resolve, reject) => {
+  resolve("first");
+});
+const secondPromise = new Promise((resolve, reject) => {
+  resolve(firstPromise);
+});
+secondPromise
+  .then((res) => {
+    return res;
+  })
+  .then((res) => {
+    console.log(res); //first
+  });
+
+//9. Rewrite this example code using `async/await` instead of `then/catch`
+/*
+function loadJson(url) {
+  return fetch(url).then((res) => {
+    if (res.status === 200) {
+      return res.json();
+    } else {
+      throw new Error(res.status);
+    }
+  });
+}
+
+loadJson("https://fakeurl.com/data.json").catch((error) => console.log(error));
+*/
+async function loadJson(url) {
+  const res = await fetch(url);
+  if (res.status === 200) {
+    return await res.json();
+  }
+  throw new Error(res.status);
+}
