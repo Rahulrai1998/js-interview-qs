@@ -196,3 +196,30 @@ prms1.then((res) => {
 console.log("end promise new one"); //synchronous code
 // JS executes the synchronous code first and then other callbacks/asynchronous code
 //output: start 1 end 2
+
+//2. Output
+console.log("new start"); //synchronous
+const prms2 = new Promise((resolve, reject) => {
+  console.log(1); //sychronous
+  resolve(2); //asynchronous
+  console.log(3); //synchronous
+});
+prms2.then((res) => {
+  console.log(res);
+});
+console.log("new end"); //synchronous
+//output: start 1 3 end 2
+
+//3. output
+console.log("start");
+const prms3 = new Promise((resolve, reject) => {
+  console.log(1);
+  console.log(3);
+});
+prms3.then((res) => {
+  //there is no resolve in Promise
+  //hence the .then block will not executed
+  console.log("Text" + res); //this one is skipped
+});
+console.log("end");
+//start 1 2 end
