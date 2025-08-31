@@ -386,3 +386,27 @@ async function loadJson(url) {
   }
   throw new Error(res.status);
 }
+
+//10. Take array of promises in the function and resolve them recursively
+const promiseOne = new Promise((resolve, reject) => {
+  resolve("Promise One");
+});
+const promiseTwo = new Promise((resolve, reject) => {
+  resolve("Promise Two");
+});
+const promiseThree = new Promise((resolve, reject) => {
+  resolve("Promise Three");
+});
+
+function promiseRecur(promisesArray) {
+  if (promisesArray.length === 0) return;
+  const temp = promisesArray.shift(); //will take out 0th element and modify the original array on each iteration
+  temp.then((res) => console.log(res)).catch((error) => console.log(error));
+  promiseRecur(promisesArray); // remaining elements of array will be passed
+}
+promiseRecur([promiseOne, promiseTwo, promiseThree]);
+
+//11. Promise Polyfill
+function myPromise(executor) {
+
+}
