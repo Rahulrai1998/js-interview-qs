@@ -478,7 +478,7 @@ myPromise.resolve = (val) => {
     resolve(val);
   });
 };
-//here, resolve() is static method for out promise polyfill
+//here, resolve() is static method for our promise polyfill
 //static methods don't need instances to be called.
 myPromise.resolve("new promise").then((res) => console.log(res));
 
@@ -493,3 +493,33 @@ myPromise
   .reject("I am rejected")
   .then((res) => console.log(res))
   .catch((error) => console.log(error));
+
+//Polyfill of Promise.all(), just create a custom static method for Promise class
+Promise.allPolyfill = (promises) => {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    if (!promises.length) {
+      resolve(results);
+      return;
+    }
+
+    let pending = promises.length;
+    promises.forEach((promise, idx) => {
+      Promise.resolve(promise).then((res) => {
+        results[idx] = res;
+        pending--;
+        if (pending === 0) {
+          resolve(results);
+        }
+      }, reject);
+    });
+  });
+};
+
+Promise.allPolyfill([
+  Promise.resolve("First Promise"),
+  Promise.resolve("Second Promise"),
+  Promise.resolve("Third Promise"),
+])
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
